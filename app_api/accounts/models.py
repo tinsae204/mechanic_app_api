@@ -1,4 +1,4 @@
-from multiprocessing.reduction import AbstractReducer
+# from multiprocessing.reduction import AbstractReducer
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
