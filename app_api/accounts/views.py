@@ -11,7 +11,7 @@ class CustomerSignupView(APIView):
     def post(self, request):
         serializer_class = CustomerSerializer(data = request.data)
         serializer_class.is_valid(raise_exception=True)
-        serializer_class.save()
+        # serializer_class.save()
         return Response(serializer_class.data)
 
 #add_ mechanic
@@ -19,7 +19,7 @@ class AddMechanicView(APIView):
     def post(self, request):
         serializer_class = AddMechanicSerializer(data = request.data)
         serializer_class.is_valid(raise_exception=True)
-        serializer_class.save()
+        # serializer_class.save()
         return Response(serializer_class.data)
 
 #add_ trmanager
@@ -27,7 +27,7 @@ class AddTRManagerView(APIView):
     def post(self, request):
         serializer_class = TRManagerSerializer(data = request.data)
         serializer_class.is_valid(raise_exception=True)
-        serializer_class.save()
+        # serializer_class.save()
         return Response(serializer_class.data)
 
 #customer/mechanic login
@@ -61,9 +61,23 @@ class CustomerLoginView(APIView):
         return response 
 
 #get customer data
-# class CustomerView(APIView):
-#     def get(self, request):
-#         pass 
+class CustomerView(APIView):
+    def get(self, request):
+        token = request.COOKIES.get('jwt')
+
+        if not token:
+            raise AuthenticationFailed('Unauthenticated user')
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithm=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated user')
+
+        customer = Customer.objects.filter(id = payload['id']).first()
+
+        return Response({
+            "User": customer
+        })
 
 #customer/mechanic login
 class MechanicLoginView(APIView):
@@ -93,7 +107,26 @@ class MechanicLoginView(APIView):
             'jwt': token
         }
 
-        return response             
+        return response  
+
+#get mechanic data 
+class MechanicView(APIView):
+    def get(self, request):
+        token = request.COOKIES.get('jwt')
+
+        if not token:
+            raise AuthenticationFailed('Unauthenticated user')
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithm=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated user')
+
+        mechanic = Mechanic.objects.filter(id = payload['id']).first()
+
+        return Response({
+            "User": mechanic
+        })           
 
 #admin login
 class AdminLoginView(APIView):
@@ -124,3 +157,33 @@ class AdminLoginView(APIView):
         }
 
         return response 
+
+#get admin data
+class AdminView(APIView):
+    def get(self, request):
+        token = request.COOKIES.get('jwt')
+
+        if not token:
+            raise AuthenticationFailed('Unauthenticated user')
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithm=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated user')
+
+        user = User.objects.filter(id = payload['id']).first()
+
+        return Response({
+            "User": user
+        }) 
+
+#signing out
+class LogoutView(APIView):
+    def post(self, request):
+        response = Response()
+        response.delete_cookie('jwt')
+        response.data = {
+            'message': 'logged out'
+        }
+
+        return response
