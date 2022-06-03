@@ -13,6 +13,4 @@ urlpatterns = [
     path('mechanic_home/', MechanicView.as_view(), name="mechanic-home"),
     path('customer_home/', CustomerView.as_view(), name="customer-home"),
     path('logout/', LogoutView.as_view(), name="logout"),
-
-
 ]
