@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'accounts',
     'channels',
     'django_extensions',
     'corsheaders',
@@ -50,6 +49,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'rest_auth',
     'rest_auth.registration',
+    'accounts',
+    'service_request',
+    'car_info'
 ]
 
 MIDDLEWARE = [
