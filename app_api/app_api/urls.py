@@ -1,6 +1,6 @@
 
 from django.contrib import admin
-from django.urls import path, include, re_path
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -10,4 +10,5 @@ urlpatterns = [
     path('auth/', include('accounts.urls')),
     path('car_info/', include('car_info.urls')),
     path('service_type/', include('service_type.urls')),
+    path('service_request/',include('service_request.urls')),
 ]
