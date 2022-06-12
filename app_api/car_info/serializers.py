@@ -4,8 +4,8 @@ from .models import CarInfo
 class CarInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model: CarInfo
-        fields=['maker','model','year']
+        model= CarInfo
+        fields = '__all__'
 
     maker = serializers.CharField(required=True)
     model = serializers.CharField(required=True)

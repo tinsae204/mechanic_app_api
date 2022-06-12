@@ -35,9 +35,3 @@ class Mechanic(models.Model):
     pic = models.FileField(upload_to='uploads', blank=True)
     is_online = models.BooleanField(default=False)
     is_suspended = models.BooleanField(default=False)
-
-
-# @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-# def create_auth_token(sender, instance=None, created=False, **kwargs):
-#     if created: 
-#         Token.objects.create(user=instance)

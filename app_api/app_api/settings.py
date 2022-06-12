@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'accounts',
     'service_request',
-    'car_info'
+    'car_info',
+    'service_type',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +64,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
+    # "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = 'app_api.urls'

@@ -1,8 +1,12 @@
 from rest_framework import serializers
-from .models import Mechanic, Customer
+from .models import CustomAdmin, Mechanic, Customer, TRmanager
 
 
 class CustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = '__all__'
+
     customer = serializers.PrimaryKeyRelatedField(read_only=True)
     phoneno = serializers.CharField(required=True)
 
@@ -25,6 +29,10 @@ class CustomerSerializer(serializers.ModelSerializer):
 
 
 class AddMechanicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Mechanic
+        fields = '__all__'
+
     mechanic = serializers.PrimaryKeyRelatedField(read_only=True)
     phoneno = serializers.CharField(required=True)
     specialization = serializers.CharField(required=True)
@@ -56,6 +64,11 @@ class AddMechanicSerializer(serializers.ModelSerializer):
 
 
 class AdminSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomAdmin
+        fields = '__all__'
+
     customadmin = serializers.PrimaryKeyRelatedField(read_only=True)
 
     def get_cleaned_data(self):
@@ -70,6 +83,11 @@ class AdminSerializer(serializers.ModelSerializer):
 
 
 class TRManagerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TRmanager
+        fields = '__all__'
+
     trmanager = serializers.PrimaryKeyRelatedField(read_only=True)
 
     def get_cleaned_data(self):
