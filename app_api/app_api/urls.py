@@ -11,4 +11,5 @@ urlpatterns = [
     path('car_info/', include('car_info.urls')),
     path('service_type/', include('service_type.urls')),
     path('service_request/',include('service_request.urls')),
+    path('scheduled_service_request/',include('scheduled_service_request.urls')),
 ]
