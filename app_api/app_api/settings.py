@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'car_info',
     'service_type',
     'scheduled_service_request',
+    'payment',
 ]
 
 MIDDLEWARE = [
