@@ -8,6 +8,10 @@ class CustomerSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     customer = serializers.PrimaryKeyRelatedField(read_only=True)
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
     phoneno = serializers.CharField(required=True)
 
     def get_cleaned_data(self):
@@ -21,7 +25,6 @@ class CustomerSerializer(serializers.ModelSerializer):
 
     def save(self, request):
         user = super(CustomerSerializer, self).save(request)
-        user.is_customer = True
         user.save()
         customer = Customer(customer = user, phoneno = self.cleaned_data.get('phoneno'))
         customer.save()
@@ -55,16 +58,13 @@ class AddMechanicSerializer(serializers.ModelSerializer):
 
     def save(self, request):
         user = super(AddMechanicSerializer, self).save(request)
-        user.is_mechanic = True
         user.save()
         mechanic = Mechanic(mechanic = user, phoneno = self.cleaned_data.get('phoneno'), specialization = self.cleaned_data.get('specialization'), education = self.cleaned_data.get('education'), docs = self.cleaned_data.get('docs'), pic = self.cleaned_data.get('pic'))
-
         mechanic.save()
         return user
 
 
 class AdminSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = CustomAdmin
         fields = '__all__'
@@ -96,6 +96,5 @@ class TRManagerSerializer(serializers.ModelSerializer):
 
     def save(self, request):
         user = super(TRManagerSerializer, self).save(request)
-        user.is_trmanager = True
         user.save()
         return user        

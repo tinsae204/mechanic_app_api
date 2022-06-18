@@ -161,6 +161,7 @@ CHANNEL_LAYERS = {
             "hosts": ['127.0.0.1', '6379']
         },
     },
+    'ROUTING': 'ws.routing.application',
 }
 
 REST_FRAMEWORK = {

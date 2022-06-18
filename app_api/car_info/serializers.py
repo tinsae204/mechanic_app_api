@@ -19,3 +19,4 @@ class CarInfoSerializer(serializers.ModelSerializer):
         car_info = super(CarInfoSerializer, self).save(request)
         car_info.save()
         return car_info
+        

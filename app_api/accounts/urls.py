@@ -1,16 +1,16 @@
 from django.urls import path
-from .views import AddMechanicView, AddTRManagerView, CustomerSignupView, CustomerLoginView, AdminLoginView, MechanicLoginView
-from .views import AdminView, MechanicView, CustomerView, LogoutView
+from .views import add_mechanic, add_trmanager, customer_login, admin_login, mechanic_login
+from .views import get_auth_admin, get_auth_mechanic, get_auth_customer, logout, customer_signup, add_mechanic
 
 urlpatterns = [
-    path('customer_signup/', CustomerSignupView.as_view(), name='signup-customer'),
-    path('add_mechanic/', AddMechanicView.as_view(), name='add-mechanic'),
-    path('add_trmanager/', AddTRManagerView.as_view(), name="add-trmanager"),
-    path('customer_login/', CustomerLoginView.as_view(), name="customer-login"),
-    path('mechanic_login/', MechanicLoginView.as_view(), name="mechanic-login"),
-    path('admin_login/', AdminLoginView.as_view(), name="admin-login"),
-    path('admin_home/', AdminView.as_view(), name="admin-home"),
-    path('mechanic_home/', MechanicView.as_view(), name="mechanic-home"),
-    path('customer_home/', CustomerView.as_view(), name="customer-home"),
-    path('logout/', LogoutView.as_view(), name="logout"),
+    path('customer_signup/', customer_signup),
+    path('add_mechanic/', add_mechanic),
+    path('add_trmanager/', add_trmanager,),
+    path('customer_login/', customer_login),
+    path('mechanic_login/', mechanic_login),
+    path('admin_login/', admin_login),
+    path('admin_home/', get_auth_admin),
+    path('mechanic_home/', get_auth_mechanic),
+    path('customer_home/', get_auth_customer),
+    path('logout/', logout),
 ]
