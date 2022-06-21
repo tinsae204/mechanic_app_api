@@ -1,7 +1,12 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from pusher_push_notifications import PushNotifications
+from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 from .models import ServiceRequest
 from .serializers import ServiceRequestSerializer
+from django.shortcuts import HttpResponse
+import folium
+import geocoder
 
 @api_view(['GET'])
 def getRequests(request):
@@ -18,6 +23,7 @@ def getRequest(request, pk):
 @api_view(['POST'])
 def createRequest(request):
     data = request.data
+    service = None
     service_request = ServiceRequest.objects.create(
         service_type = data['service_type'],
         char_info = data['char_info'],
@@ -25,6 +31,9 @@ def createRequest(request):
     )
 
     serializer = ServiceRequestSerializer(service_request, many=False)
+
+    # notify(data['service_type'])
+
     return Response(serializer.data)
 
 @api_view(['PUT'])
@@ -44,6 +53,32 @@ def discardRequest(request, pk):
 
     return Response("Request Deleted")
 
+@api_view(['GET'])
+def show_location(request):
+    data = request.data
+    location = geocoder.osm(data['location'])
+    latitude = location.lat
+    longitude = location.lng
+    #create map
+    map_object = folium.Map(location=[19, -12], zoom_start=2)
+    folium.Marker([latitude, longitude]).add_to(map_object)
+    map_object = map_object._repr_html_()
+    context={
+        'map object': map_object
+    }
+    return HttpResponse(context)
 
+# def notify(service_type):
+#     pn_client = PushNotifications(
+#         instance_id= '',
+#         secret_key=''
+#     )
 
+#     response = pn_client.publish(
+#         interests=['hello'],
+#         publish_body={'apns': {'aps': {'alert': 'New service request!!!'}},
+#                       'fcm': {'notification': {'title': 'Request','body': str(service_type + ' has been requested.')}}}
+#     )
+
+#     return Response({'Response': response})
 

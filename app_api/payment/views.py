@@ -2,6 +2,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Payment, Invoice
 from .serializers import PaymentSerializer, InvoiceSerializer
+from .helpers import send_otp_to_phone
+from accounts.models import Mechanic, Customer
 
 
 # payment api views
@@ -76,6 +78,13 @@ def updateInvoice(request, pk):
         serializer.save()
     return Response(serializer.data)
 
+@api_view(['GET'])
+def send_otp(request):
+    data = request.data
+    otp = send_otp_to_phone(data.get('phoneno1'), data.get('phoneno2'))
+    return Response({
+        "OTP sent": otp
+    })
 
 
 

@@ -9,6 +9,8 @@ from rest_framework.decorators import api_view
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from django.shortcuts import HttpResponse
+from pusher_push_notifications import PushNotifications
+from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 
 
 #customer signup
@@ -227,6 +229,11 @@ def logout(request):
     }
 
     return response   
+
+#notify_mechanic
+def notify(request):
+    pass
+
 
 
 

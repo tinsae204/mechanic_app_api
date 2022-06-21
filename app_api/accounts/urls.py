@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import add_mechanic, add_trmanager, customer_login, admin_login, mechanic_login
 from .views import get_auth_admin, get_auth_mechanic, get_auth_customer, logout, customer_signup, add_mechanic
 

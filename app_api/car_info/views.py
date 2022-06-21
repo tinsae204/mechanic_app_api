@@ -4,7 +4,6 @@ from .models import CarInfo
 from rest_framework.decorators import api_view
 
 
-
 @api_view(['GET'])
 def getCarInfos(request):
     cars = CarInfo.objects.all()

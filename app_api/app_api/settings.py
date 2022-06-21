@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'channels',
     'django_extensions',
     'corsheaders',
+    'fcm_django',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -98,10 +99,10 @@ ASGI_APPLICATION = 'app_api.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'mechanic_app_db_',
-        'USER': 'postgres',
-        'PASSWORD': '204tinsae',
-        'HOST': 'localhost',
+        'NAME': 'd29b3p9g0cukvo',
+        'USER': 'zlargityyejuff',
+        'PASSWORD': 'c970fd72e1e7c8e2a29102104b0e1d03658e8a339329941589c624cad7df7375',
+        'HOST': 'ec2-34-200-35-222.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }
@@ -171,6 +172,12 @@ REST_FRAMEWORK = {
     ),
 }
 
+FCM_DJANGO_SETTINGS = {
+    "FCM_SERVER_KEY": "BFgO4GGu4pyiYX2HG_-SXGhOaJDCPyXg-rPkRjONFGTfE9RJWMJIL4doQP0JqbcpIFO66sLpPnLmLCITmsn6Dhc"
+}
+
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+
+OTP_API_KEY = '293832-67745-11e5-88de-5600000c6b13'

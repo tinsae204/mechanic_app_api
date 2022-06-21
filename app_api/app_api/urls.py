@@ -1,6 +1,11 @@
 
 from django.contrib import admin
 from django.urls import path, include
+from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register('devices', FCMDeviceAuthorizedViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -13,4 +18,5 @@ urlpatterns = [
     path('service_request/',include('service_request.urls')),
     path('scheduled_service_request/',include('scheduled_service_request.urls')),
     path('payment/',include('payment.urls')),
+    path('', include(router.urls)),
 ]
