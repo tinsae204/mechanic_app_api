@@ -1,7 +1,5 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from pusher_push_notifications import PushNotifications
-from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 from .models import ServiceRequest
 from .serializers import ServiceRequestSerializer
 from django.shortcuts import HttpResponse

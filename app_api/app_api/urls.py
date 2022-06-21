@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.urls import path, include
 from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 from rest_framework.routers import DefaultRouter
+from .views import notify
 
 router = DefaultRouter()
 router.register('devices', FCMDeviceAuthorizedViewSet)
@@ -19,4 +20,5 @@ urlpatterns = [
     path('scheduled_service_request/',include('scheduled_service_request.urls')),
     path('payment/',include('payment.urls')),
     path('', include(router.urls)),
+    path('notify/', notify)
 ]
