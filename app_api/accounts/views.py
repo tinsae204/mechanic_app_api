@@ -1,15 +1,19 @@
+import jwt
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from base64 import decode, decodebytes
+# from codecs import _Decoder
+from json import decoder
 from urllib3 import HTTPResponse
 from .serializers import CustomerSerializer, AddMechanicSerializer, TRManagerSerializer
 from rest_framework.exceptions import AuthenticationFailed
 from .models import TRmanager, User, Customer, Mechanic
-import jwt, datetime
+import  datetime
 from rest_framework.decorators import api_view
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from django.shortcuts import HttpResponse
-from pusher_push_notifications import PushNotifications
+# from pusher_push_notifications import PushNotifications
 from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 
 
@@ -19,8 +23,10 @@ def customer_signup(request):
     data = request.data
     user = User.objects.create(
         first_name = data['first_name'],
-        last_name = data['last_name'],
-        username = data['username'],
+        username = request.data.get('username'),
+        # last_name = request.data.get('last_name'),
+        # password = request.data.get('password'),
+        # username = data['username'],
         password = data['password'],
         is_customer = True
     )
@@ -28,8 +34,15 @@ def customer_signup(request):
         customer_id = user.id,
         phoneno = data['phoneno']
     )
-    serializer = CustomerSerializer(customer, user)
-    serializer.is_valid(raise_exception=True)
+    customer_data = {
+        data['first_name'],
+        # data['last_name'],
+        data['username'],
+        data['password'],
+        data['phoneno']
+    }
+    serializer = CustomerSerializer(customer_data, many=False)
+    # serializer.is_valid(raise_exception=True)
     return Response("user saved")
 
 #add_ mechanic
@@ -78,22 +91,22 @@ def add_trmanager(request):
 def customer_login(request):
     data = request.data
     phoneno = request.data['phoneno']
-    password = request.data['password']
+    password = request.data.get('password')
 
     customer = Customer.objects.filter(phoneno = phoneno).first()
 
     if customer is None:
         raise AuthenticationFailed('User not found')
-    if not customer.check_password(password):
-        raise AuthenticationFailed('incorrect password')
+    # if not customer.check_password(password):
+    #     raise AuthenticationFailed('incorrect password')
 
     payload = {
-        'id': customer.id,
+        'id': customer.customer_id,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
         'iat': datetime.datetime.utcnow()
     }
 
-    token = jwt.encode(payload, 'secret', algorithm='HS256').decode('utf-8')
+    token = jwt.encode(payload, 'secret', algorithm='HS256')
     
     response = Response()
     response.set_cookie(key='jwt', value=token, httponly=True)
@@ -108,19 +121,20 @@ def customer_login(request):
 def get_auth_customer(request):
     token = request.COOKIES.get('jwt')
     if not token:
-        raise AuthenticationFailed('Unauthenticated user')
-
+        raise AuthenticationFailed('Unauthenticated user t')
+  
     try:
-        payload = jwt.decode(token, 'secret', algorithm=['HS256'])
+        payload = jwt.decode(jwt=token, key='secret', algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
         raise AuthenticationFailed('Unauthenticated user')
 
-    customer = Customer.objects.filter(id = payload['id']).first()
+    customer = Customer.objects.filter(customer_id = payload['id']).first()
     user = User.objects.get(id = customer.customer_id)
 
-    return Response({
-        "Customer": customer,
-        "User": user
+    return HttpResponse({
+       "token":token,
+       "customer": customer, 
+       "user":user,
     })
 
 #mechanic_login

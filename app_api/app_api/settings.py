@@ -24,11 +24,10 @@ SECRET_KEY = 'django-insecure-hv_)2ld8f-6-z25!1*2_(*@+6(nlt1wgfptbe-b%nk3uds3sg6
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+ 
 
-ALLOWED_HOSTS = []
-
-AUTH_USER_MODEL = 'accounts.User'
-
+AUTH_USER_MODEL = 'accounts.User' 
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'None'
 
 # Application definition
 
@@ -177,7 +176,7 @@ FCM_DJANGO_SETTINGS = {
 }
 
 
-CORS_ORIGIN_ALLOW_ALL = True
+ALLOWED_HOSTS = ['192.168.56.1', 'localhost', '127.0.0.1']
 CORS_ALLOW_CREDENTIALS = True
 
 OTP_API_KEY = '293832-67745-11e5-88de-5600000c6b13'
