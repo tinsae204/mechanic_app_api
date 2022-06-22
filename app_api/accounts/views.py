@@ -1,10 +1,14 @@
+import jwt
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from base64 import decode, decodebytes
+# from codecs import _Decoder
+from json import decoder
 from urllib3 import HTTPResponse
 from .serializers import CustomerSerializer, AddMechanicSerializer, TRManagerSerializer
 from rest_framework.exceptions import AuthenticationFailed
 from .models import TRmanager, User, Customer, Mechanic
-import jwt, datetime
+import  datetime
 from rest_framework.decorators import api_view
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
@@ -19,9 +23,11 @@ def customer_signup(request):
     data = request.data
     user = User.objects.create(
         first_name = data['first_name'],
-        last_name = data['last_name'],
-        username = data['username'],
-        password = data['password'],
+        # username = request.data.get('username'),
+        # last_name = request.data.get('last_name'),
+    password = request.data.get('password'),
+        # username = data['username'],
+        # password = data['password'],
         is_customer = True
     )
     customer = Customer.objects.create(
@@ -30,8 +36,8 @@ def customer_signup(request):
     )
     customer_data = {
         data['first_name'],
-        data['last_name'],
-        data['username'],
+        # data['last_name'],
+        # data['username'],
         data['password'],
         data['phoneno']
     }
@@ -118,7 +124,7 @@ def get_auth_customer(request):
         raise AuthenticationFailed('Unauthenticated user')
 
     try:
-        payload = jwt.decode(token, 'secret', algorithm=['HS256'])
+        payload = jwt.decode(jwt=token, key='secret', algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
         raise AuthenticationFailed('Unauthenticated user')
 
