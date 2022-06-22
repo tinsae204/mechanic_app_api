@@ -100,7 +100,7 @@ def customer_login(request):
         'iat': datetime.datetime.utcnow()
     }
 
-    token = jwt.encode(payload, 'secret', algorithm='HS256')
+    token = jwt.encode(payload, 'secret', algorithms='HS256')
     
     response = Response()
     response.set_cookie(key='jwt', value=token, httponly=True)
