@@ -1,3 +1,4 @@
+from click import DateTime
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Payment, Invoice
@@ -6,8 +7,7 @@ from .helpers import send_otp_to_phone
 from accounts.models import Mechanic, Customer
 
 
-# payment api views
-
+#payment api views
 @api_view(['GET'])
 def getPayments(request):
     payments = Payment.objects.all()
@@ -35,15 +35,13 @@ def makePayment(request):
 def updatePayment(request, pk):
     data = request.data
     payment = Payment.objects.get(id = pk)
-
     serializer = Payment(payment, data = request.data)
-    if serializer.is_valid():
-        serializer.save()
+    # if serializer.is_valid():
+    #     serializer.save()
     return Response(serializer.data)
 
 
-# Invoice api views
-
+#Invoice api views
 @api_view(['GET'])
 def getInvoices(request):
     invoices = Invoice.objects.all()
@@ -64,7 +62,6 @@ def makeInvoice(request):
         amount = data['amount'],
         picture = data['picture'],
     )
-
     serializer = InvoiceSerializer(invoice, many=False)
     return Response(serializer.data)
 
@@ -74,9 +71,21 @@ def updateInvoice(request, pk):
     invoice = Invoice.objects.get(id = pk)
 
     serializer = Invoice(invoice, data = request.data)
-    if serializer.is_valid():
-        serializer.save()
+    # if serializer.is_valid():
+    #     serializer.save()
     return Response(serializer.data)
+
+@api_view(['POST'])
+def confirm_invoice(request, pk):
+    invoice = Invoice.objects.get(id = pk)
+    invoice.status = True
+    serializer = InvoiceSerializer(invoice, many=False)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def confirmed_invoices(request):
+    invoices = Invoice.objects.filter(status = True)
+    return Response(invoices)
 
 @api_view(['GET'])
 def send_otp(request):

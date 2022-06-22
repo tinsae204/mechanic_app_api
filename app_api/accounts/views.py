@@ -230,6 +230,8 @@ def logout(request):
 
     return response   
 
+
+
 #notify_mechanic
 def notify(request):
     pass

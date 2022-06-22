@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import getPayment, getPayments, makePayment, updatePayment, getInvoice, getInvoices, updateInvoice, makeInvoice, send_otp
+from .views import confirm_invoice, confirmed_invoices
 
 urlpatterns = [
     # payment views
@@ -13,5 +14,7 @@ urlpatterns = [
     path('invoice/<str:pk>/', getInvoice),
     path('api/invoice/add/', makeInvoice),
     path('api/invoice/<str:pk>/update/', updateInvoice),
+    path('api/invoice/<str:pk>/confirm/', confirm_invoice),
+    path('api/invoice/confirmed/', confirmed_invoices),
 ]
 

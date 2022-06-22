@@ -1,10 +1,12 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from .models import ServiceRequest
 from .serializers import ServiceRequestSerializer
 from django.shortcuts import HttpResponse
 import folium
 import geocoder
+from accounts.models import Mechanic, Customer
 
 @api_view(['GET'])
 def getRequests(request):
@@ -69,6 +71,37 @@ def show_location(request):
         'map object': map_object
     }
     return HttpResponse(context)
+
+#successful requests
+@api_view(['GET'])
+def successful_requests(request):
+    requests = ServiceRequest.objects.filter(status = True)
+    count = requests.count()
+    return HttpResponse(count)
+
+#count requests
+@api_view(['GET'])
+@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
+def count_requests(request):
+    requests = ServiceRequest.objects.all()
+    count = requests.count()
+    return HttpResponse(count)
+
+#count customer
+@api_view(['GET'])
+@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
+def count_customer(request):
+    customers = Customer.objects.all()
+    count = customers.count()
+    return HttpResponse(count)
+
+#count mechanic
+@api_view(['GET'])
+@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
+def count_mechanic(request):
+    mechanics = Mechanic.objects.all()
+    count = mechanics.count()
+    return Response(count)
 
 # def notify(service_type):
 #     pn_client = PushNotifications(
