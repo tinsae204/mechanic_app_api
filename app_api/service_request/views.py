@@ -53,13 +53,17 @@ def discardRequest(request, pk):
 
 @api_view(['GET'])
 def show_location(request):
-    data = request.data
-    location = geocoder.osm(data['location'])
-    latitude = location.lat
-    longitude = location.lng
+
+    # location = geocoder.osm(data['location'])
+    m_latitude = request.data['m_latitude']
+    m_longitude = request.data['m_longitude']
+
+    c_latitude = request.data['c_latitude']
+    c_longitude = request.data['c_longitude']
     #create map
     map_object = folium.Map(location=[19, -12], zoom_start=2)
-    folium.Marker([latitude, longitude]).add_to(map_object)
+    folium.Marker([m_latitude, m_longitude]).add_to(map_object)
+    folium.Marker([c_latitude, c_longitude]).add_to(map_object)
     map_object = map_object._repr_html_()
     context={
         'map object': map_object
