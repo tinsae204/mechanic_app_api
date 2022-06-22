@@ -101,12 +101,12 @@ def customer_login(request):
     #     raise AuthenticationFailed('incorrect password')
 
     payload = {
-        'id': customer.id,
+             'id': customer.customer_id,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
         'iat': datetime.datetime.utcnow()
     }
 
-    token = jwt.encode(payload, 'secret', algorithms='HS256')
+    token = jwt.encode(payload, 'secret', algorithm='HS256')
     
     response = Response()
     response.set_cookie(key='jwt', value=token, httponly=True)
