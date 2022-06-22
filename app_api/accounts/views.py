@@ -28,8 +28,15 @@ def customer_signup(request):
         customer_id = user.id,
         phoneno = data['phoneno']
     )
-    serializer = CustomerSerializer(customer, user)
-    serializer.is_valid(raise_exception=True)
+    customer_data = {
+        data['first_name'],
+        data['last_name'],
+        data['username'],
+        data['password'],
+        data['phoneno']
+    }
+    serializer = CustomerSerializer(customer_data, many=False)
+    # serializer.is_valid(raise_exception=True)
     return Response("user saved")
 
 #add_ mechanic
@@ -78,14 +85,14 @@ def add_trmanager(request):
 def customer_login(request):
     data = request.data
     phoneno = request.data['phoneno']
-    password = request.data['password']
+    password = request.data.get('password')
 
     customer = Customer.objects.filter(phoneno = phoneno).first()
 
     if customer is None:
         raise AuthenticationFailed('User not found')
-    if not customer.check_password(password):
-        raise AuthenticationFailed('incorrect password')
+    # if not customer.check_password(password):
+    #     raise AuthenticationFailed('incorrect password')
 
     payload = {
         'id': customer.id,
@@ -93,7 +100,7 @@ def customer_login(request):
         'iat': datetime.datetime.utcnow()
     }
 
-    token = jwt.encode(payload, 'secret', algorithm='HS256').decode('utf-8')
+    token = jwt.encode(payload, 'secret', algorithm='HS256')
     
     response = Response()
     response.set_cookie(key='jwt', value=token, httponly=True)
