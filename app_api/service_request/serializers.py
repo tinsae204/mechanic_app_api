@@ -9,6 +9,8 @@ class ServiceRequestSerializer(serializers.ModelSerializer):
         model= ServiceRequest
         fields= '__all__'
 
-    service_type = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-    char_info = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
-    location = serializers.CharField(required=True)
+    customer = serializers.PrimaryKeyRelatedField(read_only=True)
+    service_type = serializers.PrimaryKeyRelatedField(read_only=True)
+    char_info = serializers.PrimaryKeyRelatedField(read_only=True)
+    customer_lat= serializers.IntegerField(required=True)
+    customer_lon= serializers.IntegerField(required=True)

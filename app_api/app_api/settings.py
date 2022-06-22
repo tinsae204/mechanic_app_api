@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'service_type',
     'scheduled_service_request',
     'payment',
+    'ratings',
 ]
 
 MIDDLEWARE = [

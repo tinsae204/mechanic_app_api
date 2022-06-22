@@ -46,6 +46,7 @@ def customer_signup(request):
     # serializer.is_valid(raise_exception=True)
     return Response("user saved")
 
+
 #add_ mechanic
 @api_view(['POST'])
 def add_mechanic(request):
@@ -87,6 +88,7 @@ def add_trmanager(request):
     serializer.is_valid(raise_exception=True)
     return Response("user saved")
 
+
 #customer login
 @api_view(['POST'])
 def customer_login(request):
@@ -117,12 +119,47 @@ def customer_login(request):
 
     return response
 
+#login
+@api_view(['POST'])
+def login(request):
+    data = request.data
+    phoneno = request.data['phoneno']
+    password = request.data.get('password')
+
+    auth_user = Customer.objects.filter(phoneno = phoneno).first()
+    if auth_user is not None:
+        payload = {
+            'id': auth_user.customer_id,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+            'iat': datetime.datetime.utcnow()
+        }
+    else:
+        auth_user = Mechanic.objects.filter(phoneno = phoneno).first()
+        payload = {
+        'id': auth_user.mechanic_id,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+        'iat': datetime.datetime.utcnow()
+    }
+    if auth_user is None:
+        raise AuthenticationFailed('User not found')
+
+    token = jwt.encode(payload, 'secret', algorithm='HS256')
+    
+    response = Response()
+    response.set_cookie(key='jwt', value=token, httponly=True)
+    response.data = {
+        'jwt': token
+    }
+
+    return response
+
+
 #get authorized customer data
 @api_view(['GET'])
 def get_auth_customer(request):
-    token = request.COOKIES.get('jwt')
+    token = request.headers.get('jwt')
     if not token:
-        raise AuthenticationFailed('Unauthenticated user t')
+        raise AuthenticationFailed('Unauthenticated user')
   
     try:
         payload = jwt.decode(jwt=token, key='secret', algorithms=['HS256'])

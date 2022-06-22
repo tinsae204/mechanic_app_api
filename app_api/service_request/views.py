@@ -6,7 +6,10 @@ from .serializers import ServiceRequestSerializer
 from django.shortcuts import HttpResponse
 import folium
 import geocoder
+import jwt
 from accounts.models import Mechanic, Customer
+from car_info.models import CarInfo
+from service_type.models import ServiceType
 
 @api_view(['GET'])
 def getRequests(request):
@@ -23,18 +26,47 @@ def getRequest(request, pk):
 @api_view(['POST'])
 def createRequest(request):
     data = request.data
-    service = None
+    token = request.headers.get('jwt')
+
+    payload = jwt.decode(jwt=token, key='secret', algorithms=['HS256'])
+    customer = Customer.objects.filter(customer_id = payload['id']).first()
+    service_type = ServiceType.objects.filter(id = 2).first()
+    car_info = CarInfo.objects.filter(id = 1).first()
+
     service_request = ServiceRequest.objects.create(
-        service_type = data['service_type'],
-        char_info = data['char_info'],
-        location= data['location']
+        customer = customer,
+        service_type = service_type,
+        car_info = car_info,
+        customer_lat= data['customer_lat'],
+        customer_lon= data['customer_lon']
     )
 
     serializer = ServiceRequestSerializer(service_request, many=False)
 
-    # notify(data['service_type'])
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def accept_request(request, pk):
+    data = request.data
+    token = request.headers.get('jwt')
+
+    payload = jwt.decode(jwt=token, key='secret', algorithms=['HS256'])
+    mechanic = Mechanic.objects.filter(mechanic_id = payload['id']).first()
+    service_request = ServiceRequest.objects.filter(id = pk).first()
+
+    service_request.mechanic = mechanic
+    service_request.mechanic_lat = data['mechanic_lat']
+    service_request.mechanic_lon = data['mechanic_lon']
+    service_request.is_accepted = True
+
+    service_request.save()
+
+    serializer = ServiceRequestSerializer(service_request, data = request.data)
+    if serializer.is_valid():
+        serializer.save()
 
     return Response(serializer.data)
+
 
 @api_view(['PUT'])
 def updateRequest(request, pk):
@@ -49,19 +81,19 @@ def updateRequest(request, pk):
 @api_view(['DELETE'])
 def discardRequest(request, pk):
     service_request = ServiceRequest.objects.get(id = pk)
-    service_request.delete()
+    service_request.is_canceled = True
 
-    return Response("Request Deleted")
+    return Response("Request Discarded")
 
 @api_view(['GET'])
 def show_location(request):
 
     # location = geocoder.osm(data['location'])
-    m_latitude = request.data['m_latitude']
-    m_longitude = request.data['m_longitude']
+    m_latitude = request.data['mechanic_lat']
+    m_longitude = request.data['mechanic_lon']
 
-    c_latitude = request.data['c_latitude']
-    c_longitude = request.data['c_longitude']
+    c_latitude = request.data['customer_lat']
+    c_longitude = request.data['customer_lon']
     #create map
     map_object = folium.Map(location=[19, -12], zoom_start=2)
     folium.Marker([m_latitude, m_longitude]).add_to(map_object)
