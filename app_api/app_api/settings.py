@@ -26,8 +26,8 @@ SECRET_KEY = 'django-insecure-hv_)2ld8f-6-z25!1*2_(*@+6(nlt1wgfptbe-b%nk3uds3sg6
 DEBUG = True
  
 
-AUTH_USER_MODEL = 'accounts.User'
-
+AUTH_USER_MODEL = 'accounts.User' 
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'None'
 
 # Application definition
 

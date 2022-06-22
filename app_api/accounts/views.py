@@ -121,8 +121,8 @@ def customer_login(request):
 def get_auth_customer(request):
     token = request.COOKIES.get('jwt')
     if not token:
-        raise AuthenticationFailed('Unauthenticated user')
-
+        raise AuthenticationFailed('Unauthenticated user t')
+  
     try:
         payload = jwt.decode(jwt=token, key='secret', algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
@@ -132,8 +132,9 @@ def get_auth_customer(request):
     user = User.objects.get(id = customer.customer_id)
 
     return HttpResponse({
+       "token":token,
        "customer": customer, 
-       "user":user
+       "user":user,
     })
 
 #mechanic_login
