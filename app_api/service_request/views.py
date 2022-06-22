@@ -42,8 +42,8 @@ def updateRequest(request, pk):
     service_request = ServiceRequest.objects.get(id = pk)
 
     serializer = ServiceRequestSerializer(service_request, data = request.data)
-    if serializer.is_valid():
-        serializer.save()
+    # if serializer.is_valid():
+    #     serializer.save()
     return Response(serializer.data)
 
 @api_view(['DELETE'])
@@ -76,6 +76,20 @@ def show_location(request):
 @api_view(['GET'])
 def successful_requests(request):
     requests = ServiceRequest.objects.filter(status = True)
+    count = requests.count()
+    return HttpResponse(count)
+
+#un_successful requests
+@api_view(['GET'])
+def un_successful_requests(request):
+    requests = ServiceRequest.objects.filter(is_canceled = True)
+    count = requests.count()
+    return HttpResponse(count)
+
+#pending requests
+@api_view(['GET'])
+def pending_requests(request):
+    requests = ServiceRequest.objects.filter(status = False)
     count = requests.count()
     return HttpResponse(count)
 

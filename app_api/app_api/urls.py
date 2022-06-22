@@ -20,5 +20,6 @@ urlpatterns = [
     path('scheduled_service_request/',include('scheduled_service_request.urls')),
     path('payment/',include('payment.urls')),
     path('', include(router.urls)),
+    path('rating/', include('ratings.urls')),
     path('notify/', notify)
 ]

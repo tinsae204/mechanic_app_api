@@ -11,5 +11,6 @@ class ServiceRequest(models.Model):
     service_type = models.ForeignKey(ServiceType, null=True, on_delete=models.SET_NULL)
     location = models.CharField(max_length=255)
     status = models.BooleanField(default=False)
+    is_canceled = models.BooleanField(default=False)
     requested_at = models.DateTimeField(auto_now_add=True)
 

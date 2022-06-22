@@ -15,6 +15,7 @@ from asgiref.sync import async_to_sync
 from django.shortcuts import HttpResponse
 # from pusher_push_notifications import PushNotifications
 from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
+from payment.models import Payment, Invoice
 
 
 #customer signup
@@ -222,14 +223,12 @@ def get_auth_admin(request):
 
     if not token:
         raise AuthenticationFailed('Unauthenticated user')
-
     try:
         payload = jwt.decode(token, 'secret', algorithm=['HS256'])
     except jwt.ExpiredSignatureError:
         raise AuthenticationFailed('Unauthenticated user')
 
     user = User.objects.filter(id = payload['id']).first()
-
     return Response({
         "User": user
     })
@@ -241,10 +240,16 @@ def logout(request):
     response.data = {
         'message': 'logged out'
     }
+    return response 
 
-    return response   
-
-
+#get late mechanics
+@api_view(['GET'])
+def late_mechanics(request):
+    c_payments = Payment.objects.filter(completed = True)
+    for c_payment in c_payments:
+        if(c_payment.date - datetime.datetime.utcnow() > 2):
+            mechanics = Mechanic.objects.filter(mechanic_id = c_payment.mechanic) 
+    return Response(mechanics)
 
 #notify_mechanic
 def notify(request):

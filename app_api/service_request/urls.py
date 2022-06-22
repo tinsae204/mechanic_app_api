@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import getRequest, getRequests, createRequest, updateRequest, discardRequest, show_location, count_customer, count_mechanic
-from .views import count_requests, successful_requests
+from .views import count_requests, successful_requests, un_successful_requests, pending_requests
 
 urlpatterns = [
     path('', getRequests),
@@ -13,5 +13,8 @@ urlpatterns = [
     path('api/count_customer/', count_customer),
     path('api/count_requests/', count_requests),
     path('api/count_succ_request/', successful_requests),
+    path('api/count_un_succ_request/', un_successful_requests),
+    path('api/count_pending_request/', pending_requests),
+
 ]
 
