@@ -13,7 +13,7 @@ from rest_framework.decorators import api_view
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from django.shortcuts import HttpResponse
-from pusher_push_notifications import PushNotifications
+# from pusher_push_notifications import PushNotifications
 from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 
 
@@ -23,11 +23,11 @@ def customer_signup(request):
     data = request.data
     user = User.objects.create(
         first_name = data['first_name'],
-        # username = request.data.get('username'),
+        username = request.data.get('username'),
         # last_name = request.data.get('last_name'),
-    password = request.data.get('password'),
+        # password = request.data.get('password'),
         # username = data['username'],
-        # password = data['password'],
+        password = data['password'],
         is_customer = True
     )
     customer = Customer.objects.create(
@@ -37,7 +37,7 @@ def customer_signup(request):
     customer_data = {
         data['first_name'],
         # data['last_name'],
-        # data['username'],
+        data['username'],
         data['password'],
         data['phoneno']
     }
@@ -101,7 +101,7 @@ def customer_login(request):
     #     raise AuthenticationFailed('incorrect password')
 
     payload = {
-             'id': customer.customer_id,
+        'id': customer.customer_id,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
         'iat': datetime.datetime.utcnow()
     }
@@ -128,12 +128,12 @@ def get_auth_customer(request):
     except jwt.ExpiredSignatureError:
         raise AuthenticationFailed('Unauthenticated user')
 
-    customer = Customer.objects.filter(id = payload['id']).first()
+    customer = Customer.objects.filter(customer_id = payload['id']).first()
     user = User.objects.get(id = customer.customer_id)
 
-    return Response({
-        "Customer": customer,
-        "User": user
+    return HttpResponse({
+       "customer": customer, 
+       "user":user
     })
 
 #mechanic_login

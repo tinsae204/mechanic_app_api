@@ -9,8 +9,8 @@ class CustomerSerializer(serializers.ModelSerializer):
 
     customer = serializers.PrimaryKeyRelatedField(read_only=True)
     first_name = serializers.CharField(required=True)
-    last_name = serializers.CharField(required=False)
-    username = serializers.CharField(required=False)
+    # last_name = serializers.CharField(required=False)
+    # username = serializers.CharField()
     password = serializers.CharField(required=True)
     phoneno = serializers.CharField(required=True)
 
