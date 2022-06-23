@@ -8,6 +8,10 @@ class PaymentSerializer(serializers.ModelSerializer):
         model= Payment
         fields= '__all__'
 
+    customer = serializers.PrimaryKeyRelatedField(read_only=True)
+    mechanic = serializers.PrimaryKeyRelatedField(read_only=True)
+    service_request = serializers.PrimaryKeyRelatedField(read_only=True)
+    scheduled_service_request = serializers.PrimaryKeyRelatedField(read_only=True)
     payment_number = serializers.IntegerField(required=True)
     amount = serializers.FloatField(required=True)
 

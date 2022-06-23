@@ -4,6 +4,9 @@ from .models import Payment, Invoice
 from .serializers import PaymentSerializer, InvoiceSerializer
 from .helpers import send_otp_to_phone
 from accounts.models import Mechanic, Customer
+from service_request.models import ServiceRequest
+import jwt
+import random
 
 
 #payment api views
@@ -20,14 +23,38 @@ def getPayment(request, pk):
     return Response(serializer.data)
 
 @api_view(['POST'])
-def makePayment(request):
+def makePayment(request, pk):
     data = request.data
+    token = request.headers.get('jwt')
+    payload = jwt.decode(jwt=token, key='secret', algorithms=['HS256'])
+    customer = Customer.objects.filter(customer_id = payload['id']).first()
+    service_request = ServiceRequest.objects.get(id = pk)
+
     payment = Payment.objects.create(
-        payment_number = data['payment_number'],
+        customer = customer,
+        service_request = service_request,
+        payment_number = random.randint(10000, 99999),
         amount = data['amount'],
     )
 
     serializer = PaymentSerializer(payment, many=False)
+    return Response(serializer.data) 
+
+@api_view(['POST'])
+def confirmPayment(request, pk):
+    token = request.headers.get('jwt')
+    payload = jwt.decode(jwt=token, key='secret', algorithms=['HS256'])
+    mechanic = Mechanic.objects.filter(mechanic_id = payload['id']).first()
+
+    payment = Payment.objects.get(id = pk)
+    payment.mechanic = mechanic
+    payment.completed = True
+    payment.save()
+
+    serializer = PaymentSerializer(payment, data = request.data)
+    if serializer.is_valid():
+        serializer.save()
+
     return Response(serializer.data)
 
 @api_view(['PUT'])

@@ -89,36 +89,6 @@ def add_trmanager(request):
     return Response("user saved")
 
 
-#customer login
-@api_view(['POST'])
-def customer_login(request):
-    data = request.data
-    phoneno = request.data['phoneno']
-    password = request.data.get('password')
-
-    customer = Customer.objects.filter(phoneno = phoneno).first()
-
-    if customer is None:
-        raise AuthenticationFailed('User not found')
-    # if not customer.check_password(password):
-    #     raise AuthenticationFailed('incorrect password')
-
-    payload = {
-        'id': customer.customer_id,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-        'iat': datetime.datetime.utcnow()
-    }
-
-    token = jwt.encode(payload, 'secret', algorithm='HS256')
-    
-    response = Response()
-    response.set_cookie(key='jwt', value=token, httponly=True)
-    response.data = {
-        'jwt': token
-    }
-
-    return response
-
 #login
 @api_view(['POST'])
 def login(request):
@@ -158,8 +128,9 @@ def login(request):
 @api_view(['GET'])
 def get_auth_customer(request):
     token = request.headers.get('jwt')
+    print(request.headers)
     if not token:
-        raise AuthenticationFailed('Unauthenticated user')
+        raise AuthenticationFailed('Unauthenticated user t')
   
     try:
         payload = jwt.decode(jwt=token, key='secret', algorithms=['HS256'])
@@ -169,48 +140,26 @@ def get_auth_customer(request):
     customer = Customer.objects.filter(customer_id = payload['id']).first()
     user = User.objects.get(id = customer.customer_id)
 
-    return HttpResponse({
-       "token":token,
-       "customer": customer, 
-       "user":user,
-    })
+    response = Response() 
 
-#mechanic_login
-@api_view(['POST'])
-def mechanic_login(request):
-    data = request.data
-    phoneno = request.data['phoneno']
-    password = request.data['password']
-
-    mechanic = Mechanic.objects.filter(phoneno = phoneno).first()
-
-    if mechanic is None:
-        raise AuthenticationFailed('User not found')
-    if not mechanic.check_password(password):
-        raise AuthenticationFailed('incorrect password')
-
-    payload = {
-        'id': mechanic.id,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-        'iat': datetime.datetime.utcnow()
-    }
-
-    token = jwt.encode(payload, 'secret', algorithm='HS256').decode('utf-8')
-    
-    response = Response()
-    response.set_cookie(key='jwt', value=token, httponly=True)
     response.data = {
-        'jwt': token
+       "id":customer.customer_id,
+       "first_name":user.first_name,
+       "phoneno":customer.phoneno,  
+       "token":token, 
+       "isCust":user.is_customer, 
+       "isMech":user.is_mechanic 
     }
+
     return response
+
 
 #get authorized mechanic data
 @api_view(['GET'])
 def get_auth_mechanic(request):
-    token = request.COOKIES.get('jwt')
+    token = request.headers.get('jwt')
     if not token:
         raise AuthenticationFailed('Unauthenticated user')
-
     try:
         payload = jwt.decode(token, 'secret', algorithm=['HS256'])
     except jwt.ExpiredSignatureError:
@@ -250,13 +199,12 @@ def admin_login(request):
     response.data = {
         'jwt': token
     }
-
     return response
 
 #getting authorized admins data
 @api_view(['GET'])
 def get_auth_admin(request):
-    token = request.COOKIES.get('jwt')
+    token = request.headers.get('jwt')
 
     if not token:
         raise AuthenticationFailed('Unauthenticated user')
@@ -484,3 +432,62 @@ def notify(request):
 #         return Response({
 #             "User": user
 #         }) 
+
+#mechanic_login
+# @api_view(['POST'])
+# def mechanic_login(request):
+#     data = request.data
+#     phoneno = request.data['phoneno']
+#     password = request.data['password']
+
+#     mechanic = Mechanic.objects.filter(phoneno = phoneno).first()
+
+#     if mechanic is None:
+#         raise AuthenticationFailed('User not found')
+#     if not mechanic.check_password(password):
+#         raise AuthenticationFailed('incorrect password')
+
+#     payload = {
+#         'id': mechanic.id,
+#         'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+#         'iat': datetime.datetime.utcnow()
+#     }
+
+#     token = jwt.encode(payload, 'secret', algorithm='HS256').decode('utf-8')
+    
+#     response = Response()
+#     response.set_cookie(key='jwt', value=token, httponly=True)
+#     response.data = {
+#         'jwt': token
+#     }
+#     return response
+
+#customer login
+# @api_view(['POST'])
+# def customer_login(request):
+#     data = request.data
+#     phoneno = request.data['phoneno']
+#     password = request.data.get('password')
+
+#     customer = Customer.objects.filter(phoneno = phoneno).first()
+
+#     if customer is None:
+#         raise AuthenticationFailed('User not found')
+#     # if not customer.check_password(password):
+#     #     raise AuthenticationFailed('incorrect password')
+
+#     payload = {
+#         'id': customer.customer_id,
+#         'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+#         'iat': datetime.datetime.utcnow()
+#     }
+
+#     token = jwt.encode(payload, 'secret', algorithm='HS256')
+    
+#     response = Response()
+#     response.set_cookie(key='jwt', value=token, httponly=True)
+#     response.data = {
+#         'jwt': token
+#     }
+
+#     return response
