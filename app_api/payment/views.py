@@ -1,5 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.shortcuts import HttpResponse
 from .models import Payment, Invoice
 from .serializers import PaymentSerializer, InvoiceSerializer
 from .helpers import send_otp_to_phone
@@ -42,6 +43,7 @@ def makePayment(request, pk):
 
 @api_view(['POST'])
 def confirmPayment(request, pk):
+    data = request.data
     token = request.headers.get('jwt')
     payload = jwt.decode(jwt=token, key='secret', algorithms=['HS256'])
     mechanic = Mechanic.objects.filter(mechanic_id = payload['id']).first()
@@ -51,11 +53,19 @@ def confirmPayment(request, pk):
     payment.completed = True
     payment.save()
 
-    serializer = PaymentSerializer(payment, data = request.data)
-    if serializer.is_valid():
-        serializer.save()
+    # serializer = PaymentSerializer(payment, data = request.data)
+    # if serializer.is_valid():
+    #     serializer.save()
 
-    return Response(serializer.data)
+    response = Response()
+
+    response.data = {
+       "id":payment.id,  
+       "amount":payment.amount, 
+       "completed":payment.completed, 
+    }
+
+    return response
 
 @api_view(['PUT'])
 def updatePayment(request, pk):

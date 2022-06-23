@@ -52,8 +52,8 @@ def accept_request(request, pk):
 
     payload = jwt.decode(jwt=token, key='secret', algorithms=['HS256'])
     mechanic = Mechanic.objects.filter(mechanic_id = payload['id']).first()
-    service_request = ServiceRequest.objects.filter(id = pk).first()
 
+    service_request = ServiceRequest.objects.filter(id = pk).first()
     service_request.mechanic = mechanic
     service_request.mechanic_lat = data['mechanic_lat']
     service_request.mechanic_lon = data['mechanic_lon']
