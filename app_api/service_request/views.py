@@ -45,6 +45,23 @@ def createRequest(request):
 
     return Response(serializer.data)
 
+@api_view(['GET'])
+def cost_estimation(request):
+    service_type = ServiceType.objects.filter(id = 2).first()
+    min = service_type.min_price
+    max = service_type.max_price
+
+    response = Response()
+
+    response.data = {
+        "min": min,
+        "max": max
+    }
+
+    return response
+
+
+
 @api_view(['POST'])
 def accept_request(request, pk):
     data = request.data
